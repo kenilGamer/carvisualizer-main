@@ -1,0 +1,19 @@
+{
+  "name": "carvisualizer",
+  "version": "1.0.0",
+  "description": "Vite Three.js Project",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "lil-gui": "^0.19.2",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.9",
+    "vite-plugin-glsl": "^1.3.0"
+  }
+}
