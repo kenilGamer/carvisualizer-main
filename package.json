@@ -9,6 +9,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "cannon": "^0.6.2",
     "lil-gui": "^0.19.2",
     "three": "^0.169.0"
   },
