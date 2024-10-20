@@ -8,8 +8,16 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>Car Visualizer</h1>
-    <input onchange="console.log(this.value)" type="color" >
+    <h1 class="title">Car Visualizer</h1>
+   <div class="controls">
+    <select id="car-selector">
+        <option value="none" modal="none" selected>None</option>
+        <option value="Lamborghini" modal="Lamborghini">Lamborghini V12</option>
+        <option value="car" modal="car">car1</option>
+    </select>
+    <input id="color-picker" onchange="console.log(this.value)" type="color" >
+   </div>
+
     <canvas id="canvas"></canvas>
     <script type="module" src="/src/main.js"></script>
 </body>

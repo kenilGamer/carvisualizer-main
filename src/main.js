@@ -35,48 +35,114 @@ scene.add(directionalLight);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-let car;
-
+let car = ["/public/Lamborghini-V12-1.glb","/public/car.glb"];
+let body,whells;
 const loader = new GLTFLoader()
-loader.load('./car.glb', (gltf) => {
-  car = gltf.scene
-  car.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-    }
+let selectedCar = 'Lamborghini';
+
+document.getElementById('car-selector').addEventListener('change', function() {
+  selectedCar = this.value;
+  loader.load(`/public/${selectedCar}.glb`, (gltf) => {
+    car = gltf.scene
+    car.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+   if(selectedCar === 'Lamborghini'){
+    body = car.children[0].children[0].children[0]
+    whells = car.children[0].children[1].children[0]
+    console.log(body,whells);
+    // whells.material.color.set('white')
+    whells.material.map = new THREE.TextureLoader().load('/public/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg')
+   }else{
+     body = car.children[0].children[0].children[0]
+     whells = car.children[0].children[0].children[2]
+    console.log(car);
+    console.log(body,whells);
+    body.material.color.set('white')
+    body.material.map = new THREE.TextureLoader().load('/public/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg')
+   }
+
+
+    document.querySelector('input[type="color"]').addEventListener('input', (e) => {
+      if (body && body.material) {
+        body.material.color.set(e.target.value);
+      }else{
+        console.log('body not found');
+      }
+      if (whells && whells.material) {
+        whells.material.color.set(e.target.value);
+      }else{
+        console.log('whells not found');
+      }
+    });
+
+    car.position.set(0, -3.8, 0)
+    car.scale.set(2.5, 2.5, 2.5)
+    // scene.add(car)
+    scene.remove(car).add(car);
   })
-
-  const body = car.children[0].children[0].children[0]
-  const whells = car.children[0].children[0].children[2]
-
-  body.material.color.set('white')
-  body.material.map = new THREE.TextureLoader().load('/public/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg')
-
-
-  const gui = new GUI()
-
-  const bodyFolder = gui.addFolder('Body')
-  const bodyColor = { color: 0xff0000 }
-  bodyFolder.addColor(bodyColor, 'color').onChange(() => {
-    body.material.color.set(bodyColor.color)
-  })
-
-  const whellFolder = gui.addFolder('Whells')
-  const whellColor = { color: 0x000000 }
-  whellFolder.addColor(whellColor, 'color').onChange(() => {
-    whells.material.color.set(whellColor.color)
-  })
-
-  document.querySelector('input[type="color"]').addEventListener('input', (e) => {
-    body.material.color.set(e.target.value);
-    whells.material.color.set(e.target.value);
-  });
-
-  car.position.set(0, -3.8, 0)
-  car.scale.set(2.5, 2.5, 2.5)
-  scene.add(car)
 })
+
+// loader.load('/public/Lamborghini-V12-1.glb', (gltf) => {
+//   car = gltf.scene
+//   car.traverse((child) => {
+//     if (child.isMesh) {
+//       child.castShadow = true;
+//       child.receiveShadow = true;
+//     }
+//   });
+
+//   const body = car.children[0].children[0].children[0]
+//   const whells = car.children[0].children[1].children[0]
+//  console.log(body,whells);
+ 
+//   // body.material.color.set('white')
+//   // body.material.map = new THREE.TextureLoader().load('/public/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg')
+
+
+//   const gui = new GUI()
+
+//   const bodyFolder = gui.addFolder("Body");
+//   const bodyColor = { color: 0xff0000 }
+//   bodyFolder.addColor(bodyColor, 'color').onChange(() => {
+//     if (body && body.material) {
+//       body.material.color.set(bodyColor.color)
+//     }else{
+//       console.log('body not found');
+//     }
+//   })
+
+//   const whellFolder = gui.addFolder('Whells')
+//   const whellColor = { color: 0x000000 }
+//   whellFolder.addColor(whellColor, 'color').onChange(() => {
+//     if (whells && whells.material) {
+//       whells.material.color.set(whellColor.color)
+//     }else{
+//       console.log('whells not found',whells.material);
+//     }
+//   })
+
+//   document.querySelector('input[type="color"]').addEventListener('input', (e) => {
+//     if (body && body.material) {
+//       body.material.color.set(e.target.value);
+//     }else{
+//       console.log('body not found');
+//     }
+//     if (whells && whells.material) {
+//       whells.material.color.set(e.target.value);
+//     }else{
+//       console.log('whells not found');
+//     }
+//   });
+
+//   car.position.set(0, -3.8, 0)
+//   car.scale.set(2.5, 2.5, 2.5)
+//   scene.add(car)
+// })
 
 loader.load('./garage.glb', (gltf) => {
   const garage = gltf.scene
@@ -110,13 +176,18 @@ window.addEventListener('resize', fit)
 
 
 
+
 const clock = new THREE.Clock()
 const animate = () => {
+if(car && car.position){
   camera.position.x = Math.sin(clock.getElapsedTime()) * 15
   camera.position.z = Math.cos(clock.getElapsedTime()) * 15
   camera.position.y = 2 + Math.cos(clock.getElapsedTime()) * 2  
+}
 
-  car && camera.lookAt(car.position)
+  if (car && car.position) {
+    camera.lookAt(car.position);
+  }
 
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
@@ -124,6 +195,4 @@ const animate = () => {
 
 fit()
 animate()
-
-
 
